@@ -1,0 +1,9 @@
+/.fleet
+/.idea
+/.vite
+/.vscode
+/shared_folder
+/dumps
+.env
+.env.production
+report.html

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER sail
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+#chown -R sail:sail /var/www/html/bootstrap/ssr
+#chown -R sail:sail /var/www/html/bootstrap/cache
+#chown -R sail:sail /var/www/html/public/build
+#chown -R sail:sail /var/www/html/storage/logs
+#chown -R sail:sail /var/www/html/storage/app
+#chown -R sail:sail /var/www/html/storage/framework
+#chown -R sail:sail /var/www/html/node_modules
+#chown -R sail:sail /var/www/html/package-lock.json
+#chmod -R 775 /var/www/html
+#chmod -R 777 /var/www/html/public/build
+#chmod -R 777 /var/www/html/bootstrap/ssr
+#chmod -R 777 /var/www/html/bootstrap/cache
+#chmod -R 777 /var/www/html/public/build/assets
+#chmod -R 777 /var/run
+# after rebuilding web container run:
+#chown -R www-data:www-data /var/www/html/storage/logs/laravel.log
+#chown -R www-data:www-data /var/www/html/storage/framework/sessions
+
+echo "Changing ownership for Laravel directories"
+
+if [ -f /var/www/html/storage/logs/laravel.log ]; then
+    echo "Changing ownership for /var/www/html/storage/logs/laravel.log"
+    chown -R www-data:www-data /var/www/html/storage/logs/laravel.log
+else
+    echo "File /var/www/html/storage/logs/laravel.log does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/sessions ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/sessions"
+    chown -R www-data:www-data /var/www/html/storage/framework/sessions
+else
+    echo "Directory /var/www/html/storage/framework/sessions does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/views ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/views"
+    chown -R www-data:www-data /var/www/html/storage/framework/views
+else
+    echo "Directory /var/www/html/storage/framework/views does not exist"
+fi
+
+cron -c && tail -f /var/log/cron.log
+
+if [ $# -gt 0 ]; then
+    exec gosu $WWWUSER "$@"
+else
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+fi

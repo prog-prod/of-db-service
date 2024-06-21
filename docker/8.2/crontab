@@ -1,0 +1,4 @@
+* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
+0 2 * * * /usr/local/bin/autodump.sh
+
+

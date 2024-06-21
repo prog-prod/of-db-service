@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: ./docker/8.2
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+        XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+        XDEBUG_CLIENT_HOST: '${XDEBUG_CLIENT_HOST:-host.docker.internal}'
+        XDEBUG_CLIENT_PORT: '${XDEBUG_CLIENT_PORT:-9003}'
+        PHP_IDE_CONFIG: 'serverName=0.0.0.0'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    image: sail-8.2/app
+    environment:
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    ports:
+      - '${APP_PORT:-80}:80'
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.6'

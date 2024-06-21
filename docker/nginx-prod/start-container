@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+echo "Start of start-container script"
+
+if [ ! -z "$WWWUSER" ]; then
+    echo "Updating user ID to $WWWUSER"
+    usermod -u $WWWUSER serviceUser
+fi
+
+if [ ! -d /.composer ]; then
+    echo "Creating /.composer directory"
+    mkdir /.composer
+fi
+
+echo "Setting permissions for /.composer"
+chmod -R ugo+rw /.composer
+
+echo "Changing ownership for Laravel directories"
+echo "Changing ownership for Laravel directories"
+
+if [ -f /var/www/html/storage/logs/laravel.log ]; then
+    echo "Changing ownership for /var/www/html/storage/logs/laravel.log"
+    chown -R www-data:www-data /var/www/html/storage/logs/laravel.log
+else
+    echo "File /var/www/html/storage/logs/laravel.log does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/sessions ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/sessions"
+    chown -R www-data:www-data /var/www/html/storage/framework/sessions
+else
+    echo "Directory /var/www/html/storage/framework/sessions does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/views ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/views"
+    chown -R www-data:www-data /var/www/html/storage/framework/views
+else
+    echo "Directory /var/www/html/storage/framework/views does not exist"
+fi
+
+#if [ -d /var/www/html/storage/framework/cache ]; then
+#    echo "Changing ownership for /var/www/html/storage/framework/cache"
+#   chown -R www-data:www-data /var/www/html/storage/framework/cache
+#else
+#    echo "Directory /var/www/html/storage/framework/cache does not exist"
+#fi
+
+echo "Running composer install..."
+composer dump-autoload --optimize
+
+echo "Running config:cache..."
+php artisan config:cache
+
+echo "Running event:cache..."
+php artisan event:cache
+
+echo "Running route:cache..."
+php artisan route:cache
+
+echo "Running view:cache..."
+php artisan view:cache
+
+echo "Optimizing application..."
+php artisan optimize
+
+mkdir -p /var/run
+
+# Rest of the original script
+if [ $# -gt 0 ]; then
+    echo "Executing command: $@"
+    exec gosu $WWWUSER "$@"
+else
+    echo "Starting supervisord"
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+fi
+
+tail -f /dev/null
+
+echo "End of start-container script"
+
+#tail -f /var/log/inertia-ssr.log //- show ssr logs
+#tail -f /var/log/supervisor/supervisord.log

@@ -1,0 +1,139 @@
+services:
+    api:
+        build:
+            context: ./docker/8.3
+            dockerfile: Dockerfile
+        container_name: api
+        volumes:
+            - './web:/var/www/html'
+            - './dumps:/var/www/dumps'
+        networks:
+            - of_db_service
+        depends_on:
+            - redis
+            - elasticsearch1
+            - elasticsearch2
+        restart: always
+    mysql:
+        container_name: onlygirls-db
+        image: 'mysql/mysql-server:8.0'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'of_db_service-mysql:/var/lib/mysql'
+            - './docker/mysql/my.cnf:/etc/mysql/my.cnf'
+        networks:
+            - of_db_service
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            retries: 3
+            timeout: 5s
+        restart: always
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - 'of_db_service-redis:/data'
+            - './docker/redis/redis.conf:/usr/local/etc/redis/redis.conf'
+        networks:
+            - of_db_service
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+        restart: always
+        command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    elasticsearch1:
+        image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+        container_name: elasticsearch1
+        environment:
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true"
+            - "node.name=elasticsearch1"
+            - "bootstrap.memory_lock=true"
+            - "cluster.name=es-cluster"
+            - "discovery.seed_hosts=elasticsearch2"
+            - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2"
+            - "xpack.security.enabled=false"
+            - "xpack.security.http.ssl.enabled=false"
+            - "xpack.security.transport.ssl.enabled=false"
+            - "xpack.ml.enabled=false"
+            - "xpack.graph.enabled=false"
+            - "xpack.watcher.enabled=false"
+            - "path.repo=/shared_folder"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            -   type: volume
+                source: es1_data
+                target: /usr/share/elasticsearch/data
+            -   type: bind
+                source: ./shared_folder
+                target: /shared_folder
+        ports:
+            - 9200:9200
+        networks:
+            - of_db_service
+        restart: always
+    elasticsearch2:
+        image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+        container_name: elasticsearch2
+        environment:
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true"
+            - "node.name=elasticsearch2"
+            - "bootstrap.memory_lock=true"
+            - "cluster.name=es-cluster"
+            - "discovery.seed_hosts=elasticsearch1"
+            - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2"
+            - "xpack.security.enabled=false"
+            - "xpack.security.http.ssl.enabled=false"
+            - "xpack.security.transport.ssl.enabled=false"
+            - "xpack.ml.enabled=false"
+            - "xpack.graph.enabled=false"
+            - "xpack.watcher.enabled=false"
+            - "path.repo=/shared_folder"
+            - "ingest.geoip.downloader.enabled=false"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            -   type: volume
+                source: es2_data
+                target: /usr/share/elasticsearch/data
+            -   type: bind
+                source: ./shared_folder
+                target: /shared_folder
+        ports:
+            - 9201:9200
+        networks:
+            - of_db_service
+        restart: always
+networks:
+    of_db_service:
+        name: onlygirls_site_sail
+        driver: bridge
+volumes:
+    of_db_service-mysql-volume:
+        driver: local
+    of_db_service-redis:
+        driver: local
+    es1_data:
+    es2_data:
+    kibana_config:
