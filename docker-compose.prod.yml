@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  web:
+  api:
     build:
       context: ./docker/nginx-prod
       dockerfile: Dockerfile
@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
     ports:
-      - '8080:80'
+      - '8082:80'
     deploy:
       resources:
         limits:
@@ -19,7 +19,7 @@ services:
         reservations:
           cpus: '0.5'
           memory: '512m'
-  mysql:
+  database:
     deploy:
       resources:
         limits:
@@ -27,16 +27,6 @@ services:
           memory: '2g'
         reservations:
           cpus: '0.5'
-          memory: '512m'
-
-  redis:
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: '2g'
-        reservations:
-          cpus: '0.25'
           memory: '512m'
   elasticsearch1:
     deploy:

@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  web:
+  api:
     build:
-      context: ./docker/8.2
+      context: ./docker/8.3
       dockerfile: Dockerfile
       args:
         WWWGROUP: '${WWWGROUP}'
@@ -12,7 +12,7 @@ services:
         PHP_IDE_CONFIG: 'serverName=0.0.0.0'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    image: sail-8.2/app
+    image: sail-8.3/app
     environment:
       MYSQL_DATABASE: '${DB_DATABASE}'
       MYSQL_USER: '${DB_USERNAME}'

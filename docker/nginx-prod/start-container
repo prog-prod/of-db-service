@@ -4,7 +4,7 @@ echo "Start of start-container script"
 
 if [ ! -z "$WWWUSER" ]; then
     echo "Updating user ID to $WWWUSER"
-    usermod -u $WWWUSER serviceUser
+    usermod -u $WWWUSER onlygirls
 fi
 
 if [ ! -d /.composer ]; then

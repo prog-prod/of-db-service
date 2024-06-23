@@ -64,8 +64,8 @@ RUN chmod 0644 /etc/cron.d/crontab \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
-RUN groupadd --force -g $WWWGROUP serviceUser
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 serviceUser
+RUN groupadd --force -g $WWWGROUP onlygirls
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 onlygirls
 
 # Копирование конфигурационных файлов
 COPY start-container /usr/local/bin/start-container
