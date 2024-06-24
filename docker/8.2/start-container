@@ -34,9 +34,32 @@ chmod -R ugo+rw /.composer
 #chown -R www-data:www-data /var/www/html/storage/logs/laravel.log
 #chown -R www-data:www-data /var/www/html/storage/framework/sessions
 
+
+echo "Changing ownership for Laravel directories"
+
+if [ -f /var/www/html/storage/logs/laravel.log ]; then
+    echo "Changing ownership for /var/www/html/storage/logs/laravel.log"
+    chown -R www-data:www-data /var/www/html/storage/logs/laravel.log
+else
+    echo "File /var/www/html/storage/logs/laravel.log does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/sessions ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/sessions"
+    chown -R www-data:www-data /var/www/html/storage/framework/sessions
+else
+    echo "Directory /var/www/html/storage/framework/sessions does not exist"
+fi
+
+if [ -d /var/www/html/storage/framework/views ]; then
+    echo "Changing ownership for /var/www/html/storage/framework/views"
+    chown -R www-data:www-data /var/www/html/storage/framework/views
+else
+    echo "Directory /var/www/html/storage/framework/views does not exist"
+fi
+
 cron -c && tail -f /var/log/cron.log
 
-# Rest of the original script
 if [ $# -gt 0 ]; then
     exec gosu $WWWUSER "$@"
 else

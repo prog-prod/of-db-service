@@ -1,7 +1,7 @@
 services:
     api:
         build:
-            context: ./docker/8.3
+            context: ./docker/8.2
             dockerfile: Dockerfile
         container_name: api
         volumes:
@@ -9,6 +9,7 @@ services:
             - './dumps:/var/www/dumps'
         networks:
             - of_db_service
+            - common_network
         depends_on:
             - database
             - elasticsearch1
@@ -31,6 +32,7 @@ services:
             - './docker/mysql/my.cnf:/etc/mysql/my.cnf'
         networks:
             - of_db_service
+            - common_network
         healthcheck:
             test:
                 - CMD
@@ -72,6 +74,7 @@ services:
             - 9200:9200
         networks:
             - of_db_service
+            - common_network
         restart: always
     elasticsearch2:
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -106,10 +109,13 @@ services:
             - 9201:9200
         networks:
             - of_db_service
+            - common_network
         restart: always
 networks:
     of_db_service:
-        name: of_db_service
+        name: onlygirls_site_sail
+        driver: bridge
+    common_network:
         driver: bridge
 volumes:
     of_db_service-volume:
