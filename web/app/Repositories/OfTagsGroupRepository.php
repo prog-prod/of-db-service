@@ -23,4 +23,9 @@ class OfTagsGroupRepository implements OfTagsGroupRepositoryInterface
     {
         return OfTagsGroup::withLimitedTags($maxTagsLength, true);
     }
+
+    public function getOfTagsGroupByKeyWithTags(string $key)
+    {
+        return OfTagsGroup::with('tags')->where('key', $key)->first();
+    }
 }

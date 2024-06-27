@@ -45,9 +45,14 @@ interface OfUserRepositoryInterface
 
     public function getOfUserByUsername($username): ?OfUser;
 
-    public function getSimilarOfUsers(OfUser $ofUser): Collection;
+    public function getSimilarOfUsers(): Collection;
 
     public function getCategoryOfUsers(OfTag $tag): Collection;
 
     public function getOfUsersWithTrialLinks(): Collection;
+    public function getMainLastModifiedDate();
+
+    public function getRandomOfUserTag(int $ofUserId): ?OfTag;
+
+    public function getOfUserTags(mixed $userId);
 }

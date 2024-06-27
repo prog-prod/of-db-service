@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Contracts\OfTagRepositoryInterface;
 use App\Models\OfTag;
 use Elastic\Elasticsearch\ClientBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class OfTagRepository implements OfTagRepositoryInterface
 {
@@ -98,8 +100,18 @@ class OfTagRepository implements OfTagRepositoryInterface
         })->select('key', 'name')->get();
     }
 
-    public function getTagByKey(string $category): Collection|array
+    public function getTagByKey(string $category)
     {
-        return OfTag::query()->where('key', $category)->get();
+        return OfTag::query()->where('key', $category)->first();
+    }
+
+    public function getTagById(int $id): Model|null
+    {
+        return OfTag::query()->find($id);
+    }
+
+    public function getOfTagUsers(string $tagKey)
+    {
+        return $this->getTagByKey($tagKey)?->users ?? [];
     }
 }

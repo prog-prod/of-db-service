@@ -662,7 +662,7 @@ class OfUserRepository implements OfUserRepositoryInterface
                 ->format('Y-m-d H:i:s'))->get();
     }
 
-    public function getSimilarOfUsers(OfUser $ofUser): Collection
+    public function getSimilarOfUsers(): Collection
     {
         $elasticService = app(ElasticSearchServiceInterface::class);
         $response = $elasticService->limit(8)->search(randomize: true);
@@ -700,5 +700,26 @@ class OfUserRepository implements OfUserRepositoryInterface
     public function getOfUsersWithTrialLinks(): Collection
     {
         return OfUser::query()->whereNotNull('free_trial_link')->limit(10000)->get();
+    }
+
+    public function getMainLastModifiedDate()
+    {
+        return OfUser::search('')
+                ->orderBy('updated_at', 'desc')
+                ->first()->updated_at ?? now();
+    }
+
+    public function getRandomOfUserTag(int $ofUserId): ?OfTag
+    {
+        $ofUser = $this->searchOfUserById($ofUserId);
+        if ($ofUser && $ofUser->tags->isNotEmpty()) {
+            return $ofUser->tags->random();
+        }
+        return null;
+    }
+
+    public function getOfUserTags(mixed $userId)
+    {
+        return $this->searchOfUserById($userId)->tags;
     }
 }

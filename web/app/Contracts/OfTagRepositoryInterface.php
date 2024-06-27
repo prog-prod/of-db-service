@@ -24,4 +24,8 @@ interface OfTagRepositoryInterface
 
     public function getPopularTags();
     public function getTagByKey(string $category);
+
+    public function getTagById(int $id);
+
+    public function getOfTagUsers(string $tagKey);
 }

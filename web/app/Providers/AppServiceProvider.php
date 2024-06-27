@@ -3,13 +3,16 @@
 namespace App\Providers;
 
 use App\Contracts\ElasticSearchServiceInterface;
+use App\Contracts\FeedbackRepositoryInterface;
 use App\Contracts\NginxRequestFrequencyRepositoryInterface;
 use App\Contracts\OfTagRepositoryInterface;
 use App\Contracts\OfTagsGroupRepositoryInterface;
 use App\Contracts\OfUserRepositoryInterface;
 use App\Contracts\ParserStatusRepositoryInterface;
 use App\Contracts\PublicFreeTrialSubscriberRepositoryInterface;
+use App\Contracts\TelegramServiceInterface;
 use App\Contracts\UserRepositoryInterface;
+use App\Repositories\FeedbackRepository;
 use App\Repositories\NginxRequestFrequencyRepository;
 use App\Repositories\OfTagRepository;
 use App\Repositories\OfTagsGroupRepository;
@@ -18,6 +21,7 @@ use App\Repositories\ParserStatusRepository;
 use App\Repositories\PublicFreeTrialSubscriberRepository;
 use App\Repositories\UserRepository;
 use App\Services\ElasticSearchService;
+use App\Services\TelegramService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
 
         // Repositories
+        $this->app->bind(FeedbackRepositoryInterface::class, FeedbackRepository::class);
         $this->app->bind(ParserStatusRepositoryInterface::class, ParserStatusRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(OfUserRepositoryInterface::class, OfUserRepository::class);
@@ -42,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Services
         $this->app->bind(ElasticSearchServiceInterface::class, ElasticSearchService::class);
+        $this->app->bind(TelegramServiceInterface::class, TelegramService::class);
 
     }
 

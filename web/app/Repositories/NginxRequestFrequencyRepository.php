@@ -6,6 +6,7 @@ use App\Contracts\NginxRequestFrequencyRepositoryInterface;
 use App\Models\NginxRequestFrequency;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class NginxRequestFrequencyRepository implements NginxRequestFrequencyRepositoryInterface
 {
@@ -23,5 +24,19 @@ class NginxRequestFrequencyRepository implements NginxRequestFrequencyRepository
             ->groupBy('date')
             ->orderBy('date')
             ->get();
+    }
+
+    public function deleteRecordsOlderMonth()
+    {
+        return NginxRequestFrequency::query()->where('created_at', '<', now()->subDays(30))->delete();
+    }
+
+    public function writeRequestFrequency($avgFrequency)
+    {
+        return NginxRequestFrequency::query()->create([
+            'average_requests_per_second' => $avgFrequency,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

@@ -69,6 +69,10 @@ class PaginatorDTO
         }, $randomKeys);
     }
 
+    public function toJson()
+    {
+        return json_encode($this);
+    }
 
     /**
      * @param array|AnonymousResourceCollection $data

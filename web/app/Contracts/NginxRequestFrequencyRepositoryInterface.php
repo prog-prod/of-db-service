@@ -7,4 +7,9 @@ use Carbon\Carbon;
 interface NginxRequestFrequencyRepositoryInterface
 {
     public function getNginxRequestFrequencyForThePeriod(Carbon $from, Carbon $to);
+
+    public function writeRequestFrequency($avgFrequency);
+
+    public function deleteRecordsOlderMonth();
+
 }

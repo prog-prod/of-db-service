@@ -9,4 +9,6 @@ interface OfTagsGroupRepositoryInterface
     public function getOfTagsGroupsWithLimitedTags($limit = 10);
 
     public function getOfTagsLocationsGroupsWithLimitedTags(int $maxTagsLength = 10);
+
+    public function getOfTagsGroupByKeyWithTags(string $key);
 }

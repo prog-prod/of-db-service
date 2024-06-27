@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnforceHttpsMiddleware;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
@@ -32,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ValidateCsrfToken::class,
             SubstituteBindings::class,
             EnforceHttpsMiddleware::class,
+            VerifyCsrfToken::class,
         ]);
         $middleware->group('api', [
 //            EnsureFrontendRequestsAreStateful::class,
