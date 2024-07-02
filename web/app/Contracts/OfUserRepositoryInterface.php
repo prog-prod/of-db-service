@@ -25,23 +25,11 @@ interface OfUserRepositoryInterface
 
     public function searchFreeOfUsersOrderByLikes($limit = 50): PaginatorDTO;
 
-    public function updateOfUsers(array $users);
-
     public function getTotalOfUsers();
 
     public function getTotalIndexedOfUsers();
 
     public function getOfUsersForIndexation(int $limit = 50): Collection;
-
-    public function getSpecificOfUsersForIndexation(int $limit = 50): Collection;
-
-    public function getOfUsersThatWereIndexedToday(): Collection;
-
-    public function updateOfUsersIndexDate(array $usersIds, $index_date): int;
-
-    public function createOfUsers(array $users);
-
-    public function addRegularUsers(array $users): int;
 
     public function getOfUserByUsername($username): ?OfUser;
 
@@ -49,10 +37,8 @@ interface OfUserRepositoryInterface
 
     public function getCategoryOfUsers(OfTag $tag): Collection;
 
-    public function getOfUsersWithTrialLinks(): Collection;
     public function getMainLastModifiedDate();
-
     public function getRandomOfUserTag(int $ofUserId): ?OfTag;
 
-    public function getOfUserTags(mixed $userId);
+    public function getOfUserTags(int $userId);
 }

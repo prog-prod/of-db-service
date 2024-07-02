@@ -4,9 +4,6 @@ use App\Http\Controllers\OfUsersController;
 use App\Http\Controllers\TelegramController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::get('/r', [OfUsersController::class, 'redirectToExternal'])->name('users-of.redirect-to-external');
 // Webhooks
 Route::post(

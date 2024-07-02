@@ -718,7 +718,7 @@ class OfUserRepository implements OfUserRepositoryInterface
         return null;
     }
 
-    public function getOfUserTags(mixed $userId)
+    public function getOfUserTags(int $userId)
     {
         return $this->searchOfUserById($userId)->tags;
     }

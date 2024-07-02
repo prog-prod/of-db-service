@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Middleware\EnforceHttpsMiddleware;
+use App\Http\Middleware\HandleInertiaRequestsAdmin;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -30,10 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            ValidateCsrfToken::class,
             SubstituteBindings::class,
             EnforceHttpsMiddleware::class,
             VerifyCsrfToken::class,
+            HandleInertiaRequestsAdmin::class,
         ]);
         $middleware->group('api', [
 //            EnsureFrontendRequestsAreStateful::class,
@@ -42,6 +42,8 @@ return Application::configure(basePath: dirname(__DIR__))
             EnforceHttpsMiddleware::class,
         ]);
         $middleware->alias([
+            'auth_admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         ]);
         $middleware->trustProxies(at: [
             '172.20.0.1',

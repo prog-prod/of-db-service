@@ -7,7 +7,7 @@ use App\Http\Controllers\BaseController;
 class CategoryController extends BaseController
 {
     public function index() {
-        return $this->showView('Categories', [
+        return $this->showView('Categories/Index', [
             'meta' => [
                 'pageTitle' => 'Categories',
                 'breadcrumbs' => []

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Api\V1\ParserController;
 use App\Http\Controllers\Api\V1\TelegramController;
 use App\Http\Controllers\Api\V1\FeedbackController;
 use App\Http\Controllers\Api\V1\NginxController;
@@ -69,3 +70,9 @@ Route::post('/set-telegram-webhook-onlygirlscom_bot', [SettingsController::class
 Route::post('telegram/send-feedback', [TelegramController::class, 'sendFeedback'])->name(
     'telegram.send-feedback'
 );
+
+
+// Parser routes
+Route::post('/parser/onlyfans/update', [ParserController::class, 'updateOfUsers']);
+Route::post('/parser/onlyfans', [ParserController::class, 'addOfUsers']);
+Route::post('/parser/onlyfans/regular', [ParserController::class, 'addRegularOfUsers']);

@@ -23,9 +23,8 @@ interface OfTagRepositoryInterface
     public function getActionTags();
 
     public function getPopularTags();
-    public function getTagByKey(string $category);
 
-    public function getTagById(int $id);
+    public function getTagByKey(string $tag_key);
 
-    public function getOfTagUsers(string $tagKey);
+    public function getOfTagUsers(string $tag_key);
 }

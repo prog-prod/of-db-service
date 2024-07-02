@@ -37,7 +37,9 @@ class OfUserController extends BaseController
             'free_trial_link' => 'nullable|string|url',
             'deleted' => 'nullable|boolean',
         ]);
-        $ofUser->update($data);
-        return redirect()->back();
+        if($ofUser->update($data)) {
+            return redirect()->back()->with('success', 'Updated successfully');
+        }
+        return redirect()->back()->with('error', 'Failed to update');
     }
 }

@@ -1,0 +1,34 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.web.json",
+    "include": [
+        "env.d.ts",
+        "resources/js/Admin/**/*",
+        "resources/js/Admin/**/*.vue",
+        "resources/js/**/*.vue"
+    ],
+    "compilerOptions": {
+        "lib": [
+            "es2017"
+        ],
+        "module": "esnext",
+        "ignoreDeprecations": "5.0",
+        "noImplicitAny": false,
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "resources/js/Admin/*"
+            ],
+            "@/*": [
+                "resources/js/*"
+            ],
+            "@@/*": [
+                "node_modules/*"
+            ]
+        }
+    },
+    "references": [
+        {
+            "path": "./tsconfig.config.json"
+        }
+    ]
+}
