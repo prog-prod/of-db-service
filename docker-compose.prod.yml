@@ -14,10 +14,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2.7'
+          cpus: '1.8'
           memory: '3g'
         reservations:
-          cpus: '0.5'
+          cpus: '0.2'
           memory: '512m'
   database:
     deploy:
