@@ -7,7 +7,6 @@ use App\Contracts\OfTagRepositoryInterface;
 use App\Contracts\OfUserRepositoryInterface;
 use App\Contracts\ParserServiceInterface;
 use App\Contracts\ParserStatusRepositoryInterface;
-use App\Contracts\UserRepositoryInterface;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\DashboardRequest;
 use App\Http\Resources\ParserCheckingRegularsStatusResource;
@@ -23,7 +22,6 @@ class DashboardController extends BaseController
         DashboardRequest          $request,
         OfUserRepositoryInterface $ofUserRepository,
         OfTagRepositoryInterface  $ofTagRepository,
-        UserRepositoryInterface   $userRepository,
         ParserServiceInterface    $parserService,
         ChartDataServiceInterface $chartService,
     )
@@ -31,7 +29,6 @@ class DashboardController extends BaseController
         $ofTagsNumber = number_format($ofTagRepository->getTotalOfTags());
         $totalIndexedOfUsers = number_format($ofUserRepository->getTotalIndexedOfUsers());
         $totalIndexedOfTags = number_format($ofTagRepository->getTotalIndexedOfTags());
-        $usersNumber = number_format($userRepository->getTotalCountUsers());
         $start = $request->has('start') ? Carbon::parse($request->get('start')) : $parserService->getDefaultStartDate();
         $end = $request->has('end') ? Carbon::parse($request->get('end')) : $parserService->getDefaultEndDate();
         $parserData = $parserService->getParserStatusesForThePeriod($start, $end);
@@ -40,7 +37,7 @@ class DashboardController extends BaseController
         $requestsPerSecondsData = $chartService->getRequestsPerSecondForThePeriod($start, $end);
 
         return $this->showView('Dashboard', [
-            'usersNumber' => $usersNumber,
+            'usersNumber' => 0,
             'ofTagsNumber' => $ofTagsNumber,
             'indexedOfTags' => $totalIndexedOfTags,
             'indexedOfUsers' => $totalIndexedOfUsers,

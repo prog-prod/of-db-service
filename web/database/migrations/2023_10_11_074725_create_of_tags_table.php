@@ -20,9 +20,6 @@ return new class extends Migration
             $table->integer('results')->default(0);
             $table->integer('traffic')->default(0);
             $table->boolean('hidden')->default(false);
-            $table->string('title');
-            $table->string('description')->nullable();
-            $table->string('h1')->nullable();
             $table->timestamps();
         });
     }

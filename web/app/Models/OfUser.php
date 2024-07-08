@@ -372,7 +372,7 @@ class OfUser extends Model implements SearchableModel
         return $this->subscribers_count;
     }
 
-    public function getEstimatedSubscribersCountRange(): RangeDTO
+    public function getEstimatedSubscribersCountRangeAttribute(): RangeDTO
     {
         $error = 4359;
         $estimated_sub_count = $this->estimated_subscribers_count;

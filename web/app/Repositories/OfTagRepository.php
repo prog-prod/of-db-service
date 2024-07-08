@@ -100,9 +100,9 @@ class OfTagRepository implements OfTagRepositoryInterface
         })->select('key', 'name')->get();
     }
 
-    public function getTagByKey(string $category)
+    public function getTagByKey(string $tag_key)
     {
-        return OfTag::query()->where('key', $category)->first();
+        return OfTag::query()->where('key', $tag_key)->first();
     }
 
     public function getTagById(int $id): Model|null
@@ -110,8 +110,8 @@ class OfTagRepository implements OfTagRepositoryInterface
         return OfTag::query()->find($id);
     }
 
-    public function getOfTagUsers(string $tagKey)
+    public function getOfTagUsers(string $tag_key)
     {
-        return $this->getTagByKey($tagKey)?->users ?? [];
+        return $this->getTagByKey($tag_key)?->users ?? [];
     }
 }

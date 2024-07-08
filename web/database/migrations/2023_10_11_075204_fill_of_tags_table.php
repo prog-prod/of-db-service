@@ -16,7 +16,6 @@ return new class extends Migration
      */
     public function up()
     {
-        $serviceMetaTagsGenerator = app(MetaTagGeneratorServiceInterface::class);
         $path = storage_path('result.csv');
         $data = array_map('str_getcsv', file($path));
         $keys = array_column($data, 0);
@@ -31,16 +30,12 @@ return new class extends Migration
             try {
                 $modelsCount = OfUser::search($key)->paginate();
                 $name = Helper::getNameFromKey($key);
-                $metaTags = $serviceMetaTagsGenerator->generateMetaTags($name);
 
                 $results = [
                     'key' => $key,
                     'name' => $name,
                     'results' => $modelsCount->total(),
                     'traffic' => $columns[1],
-                    'title' => $metaTags->title,
-                    'description' => $metaTags->description,
-                    'h1' => $metaTags->h1
                 ];
 
                 OfTag::query()->create($results);

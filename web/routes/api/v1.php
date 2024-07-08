@@ -52,16 +52,6 @@ Route::get('/of-users/get-category-of-users', [OfUserController::class, 'getCate
 Route::get('/of-users/get-random-of-user-tag', [OfUserController::class, 'getRandomOfUserTag']);
 Route::get('/of-users/get-tags', [OfUserController::class, 'getTags']);
 
-Route::get('/tags-group/get-of-tags-groups-with-limited-tags', [OfTagGroupController::class, 'getOfTagsGroupsWithLimitedTags']);
-Route::get('/tags-group/get-of-tags-locations-groups-with-limited-tags', [OfTagGroupController::class, 'getOfTagsLocationsGroupsWithLimitedTags']);
-Route::get('/tags-group/get-of-tags-group-by-key-with-tags', [OfTagGroupController::class, 'getOfTagsGroupByKeyWithTags']);
-
-Route::get('/feedback/create-feedback', [FeedbackController::class, 'createFeedback']);
-
-
-Route::post('/nginx-request-frequency/write-request-frequency', [NginxController::class, 'writeRequestFrequency']);
-Route::get('/nginx-request-frequency/get-nginx-request-frequency-for-the-period', [NginxController::class, 'getNginxRequestFrequencyForThePeriod']);
-
 
 Route::post('/set-telegram-webhook-onlygirlscom_bot', [SettingsController::class, 'setTelegramWebhook'])->name(
     'set-telegram-webhook'
@@ -71,8 +61,3 @@ Route::post('telegram/send-feedback', [TelegramController::class, 'sendFeedback'
     'telegram.send-feedback'
 );
 
-
-// Parser routes
-Route::post('/parser/onlyfans/update', [ParserController::class, 'updateOfUsers']);
-Route::post('/parser/onlyfans', [ParserController::class, 'addOfUsers']);
-Route::post('/parser/onlyfans/regular', [ParserController::class, 'addRegularOfUsers']);
