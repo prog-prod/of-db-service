@@ -22,6 +22,6 @@ do
 done
 
 # Удаление устаревших binlog файлов MySQL, оставляем последние 2 файла
-docker exec onlygirls-db mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "PURGE BINARY LOGS BEFORE DATE_SUB(NOW(), INTERVAL 2 DAY);"
+docker exec database mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "PURGE BINARY LOGS BEFORE DATE_SUB(NOW(), INTERVAL 2 DAY);"
 
 echo "Очистка завершена"
