@@ -1,66 +1,47 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Requirements
 
-## About Laravel
+- Docker & Docker Compose.
+- Composer
+- Node.js & npm
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation & Setup
+1. Install composer dependencies: ``` composer install ```
+2. Start the Docker services: ``` ./vendor/bin/sail up -d ```
+3. Install JavaScript dependencies: ``` ./vendor/bin/sail npm install ```
+4. Create & setup .env config:  ``` cp .env.example .env ```
+5. Set the application key:  ``` php artisan key:generate ```
+6. Import of_users table to MySQL Database: ``` ./vendor/bin/sail sail mysql --default-character-set=utf8 --comments --database={DB_NAME}  < "of_performer.sql" ```
+7. Run migrations: ``` php artisan migrate ```
+8. Build project: ``` npm run build ```
+9. Import the OfUser model into the search index ``` php artisan scout:import "App\Models\OfUser" ```
+10. Run SSR server: ``` ./vendor/bin/sail artisan inertia:start-ssr```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Elasticsearch
+Indexing:       
+``` ./vendor/bin/sail artisan scout:import "App\Models\OfUser" ```        
+Reindexing:     
+``` ./vendor/bin/sail artisan scout:flush "App\Models\OfUser" ```       
+``` ./vendor/bin/sail artisan scout:import "App\Models\OfUser" ```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Development
+Run ``` npm run dev ```
 
-## Learning Laravel
+## Deployment
+- To run app in production mode: ``` ./run-prod.sh up -d ```
+- To run app in dev mode:``` ./run-dev.sh up -d ```
+- To stop app:``` ./stop.sh ```
+- To build app:``` ./vite-build.sh ```
+- To open terminal inside web service:``` ./exec.sh ```
+- To deploy changes from repo and run app in production mode:``` ./deploy.sh ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Typical errors resolving:
+1. 500 bulk operation(s) did not complete successfully. Catch the exception and use the Elastic\Adapter\Exceptions\BulkOperationException::rawResult() method to get more details.
+   Fix: Run curl -X DELETE "localhost:9200/of_users" to delete index
+   Reindex Table: ./vendor/bin/sail artisan scout:import "App\Models\OfUser"
+2. When mysql container is full Run: FLUSH LOGS;
+3. bootstrap check failure [1] of [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]:
+   Increase vm.max_map_count sudo sysctl -w vm.max_map_count=262144
+## Hints
+1. To export DB with correct encoding use --default-character-set=utf8mb4 flag in mysqldump command:
+   <br>  mysqldump "only_girls" --result-file="/dumps/{data_source}-{timestamp}-dump.sql" --skip-add-drop-table --skip-disable-keys --skip-add-locks "of_users" --lock-tables --default-character-set=utf8mb4
