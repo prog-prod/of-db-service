@@ -20,6 +20,8 @@ services:
           cpus: '0.2'
           memory: '512m'
   database:
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
     deploy:
       resources:
         limits:
@@ -28,7 +30,12 @@ services:
         reservations:
           cpus: '0.5'
           memory: '512m'
-  elasticsearch1:
+  redis:
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+  elastic1:
+    ports:
+      - '9200:9200'
     deploy:
       resources:
         limits:
@@ -37,7 +44,9 @@ services:
         reservations:
           cpus: '0.5'
           memory: '512m'
-  elasticsearch2:
+  elastic2:
+    ports:
+      - '9201:9200'
     deploy:
       resources:
         limits:

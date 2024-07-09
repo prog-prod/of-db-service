@@ -12,14 +12,12 @@ services:
             - common_network
         depends_on:
             - database
-            - elasticsearch1
-            - elasticsearch2
+            - elastic1
+            - elastic2
         restart: always
     database:
         container_name: database
         image: 'mysql/mysql-server:8.0'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: '%'
@@ -43,9 +41,8 @@ services:
             timeout: 5s
         restart: always
     redis:
+        container_name: redis-cache
         image: 'redis:alpine'
-        ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
             - 'sail-redis:/data'
             - './docker/redis/redis.conf:/usr/local/etc/redis/redis.conf'
@@ -61,16 +58,16 @@ services:
             timeout: 5s
         restart: always
         command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    elasticsearch1:
+    elastic1:
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-        container_name: elasticsearch1
+        container_name: elastic1
         environment:
             - "ES_JAVA_OPTS=-Xms1g -Xmx1g -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true"
-            - "node.name=elasticsearch1"
+            - "node.name=elastic1"
             - "bootstrap.memory_lock=true"
             - "cluster.name=es-cluster"
-            - "discovery.seed_hosts=elasticsearch2"
-            - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2"
+            - "discovery.seed_hosts=elastic2"
+            - "cluster.initial_master_nodes=elastic1,elastic2"
             - "xpack.security.enabled=false"
             - "xpack.security.http.ssl.enabled=false"
             - "xpack.security.transport.ssl.enabled=false"
@@ -89,22 +86,20 @@ services:
             -   type: bind
                 source: ./shared_folder
                 target: /shared_folder
-        ports:
-            - 9200:9200
         networks:
             - of_db_service
             - common_network
         restart: always
-    elasticsearch2:
+    elastic2:
         image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-        container_name: elasticsearch2
+        container_name: elastic2
         environment:
             - "ES_JAVA_OPTS=-Xms1g -Xmx1g -Des.index.number_of_replicas=0 -Des.enforce.bootstrap.checks=true"
-            - "node.name=elasticsearch2"
+            - "node.name=elastic2"
             - "bootstrap.memory_lock=true"
             - "cluster.name=es-cluster"
-            - "discovery.seed_hosts=elasticsearch1"
-            - "cluster.initial_master_nodes=elasticsearch1,elasticsearch2"
+            - "discovery.seed_hosts=elastic1"
+            - "cluster.initial_master_nodes=elastic1,elastic2"
             - "xpack.security.enabled=false"
             - "xpack.security.http.ssl.enabled=false"
             - "xpack.security.transport.ssl.enabled=false"
@@ -124,15 +119,13 @@ services:
             -   type: bind
                 source: ./shared_folder
                 target: /shared_folder
-        ports:
-            - 9201:9200
         networks:
             - of_db_service
             - common_network
         restart: always
 networks:
     of_db_service:
-        name: onlygirls_site_sail
+        name: onlygirls_site_new
         driver: bridge
     common_network:
         driver: bridge

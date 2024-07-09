@@ -2,7 +2,7 @@ version: '3.8'
 services:
   api:
     build:
-      context: ./docker/8.2
+      context: ./docker/nginx-prod
       dockerfile: Dockerfile
       args:
         WWWGROUP: '${WWWGROUP}'
@@ -10,6 +10,7 @@ services:
         XDEBUG_CLIENT_HOST: '${XDEBUG_CLIENT_HOST:-host.docker.internal}'
         XDEBUG_CLIENT_PORT: '${XDEBUG_CLIENT_PORT:-9003}'
         PHP_IDE_CONFIG: 'serverName=0.0.0.0'
+
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     image: sail-8.2/app
@@ -21,9 +22,22 @@ services:
       LARAVEL_SAIL: 1
       IGNITION_LOCAL_SITES_PATH: '${PWD}'
     ports:
-      - '${APP_PORT:-80}:80'
+      - '${APP_PORT:-8082}:80'
       - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
     deploy:
       resources:
         limits:
           cpus: '1.6'
+  database:
+    ports:
+      - '33061:3306'
+  redis:
+    ports:
+      - '6378:6379'
+  elastic1:
+    ports:
+      - '9203:9200'
+  elastic2:
+    ports:
+      - '9204:9200'
+
